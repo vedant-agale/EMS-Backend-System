@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -22,5 +24,12 @@ public class EmployeeController {
     public List<Employee> getAllEmployees() {
         // Repository (Cashier) ko bola: "Saare employees ki list do"
         return employeeRepository.findAll();
+    }
+    // --- SAVE EMPLOYEE ---
+    // Jab koi bolega: POST /api/employees (Data lekar)
+    @PostMapping
+    public Employee createEmployee(@RequestBody Employee employee) {
+        // Repository (Cashier) ko bola: "Ye naya banda save kar lo"
+        return employeeRepository.save(employee);
     }
 }

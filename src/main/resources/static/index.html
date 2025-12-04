@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EMS Dashboard</title>
+    
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; padding: 20px; text-align: center; }
+        h1 { color: #2c3e50; }
+        
+        /* Form Design */
+        .form-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 50%; margin: 0 auto 30px auto; }
+        input { padding: 10px; width: 40%; margin: 5px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #219150; }
+
+        /* Table Design */
+        table { width: 80%; margin: 0 auto; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #2c3e50; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+    </style>
+</head>
+<body>
+
+    <h1>Employee Management System</h1>
+
+    <div class="form-box">
+        <h3>Add New Employee</h3>
+        <input type="text" id="empName" placeholder="Employee Name">
+        <input type="number" id="empSalary" placeholder="Salary">
+        <button onclick="addEmployee()">Save Employee</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Salary (₹)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+
+    <script>
+        const API_URL = "http://localhost:8080/api/employees";
+
+        // --- LOAD DATA (Jadugar 1) ---
+        async function loadEmployees() {
+            const response = await fetch(API_URL); // Java ko call kiya
+            const data = await response.json(); // Data JSON mein mila
+            
+            let tableHTML = "";
+            data.forEach(emp => {
+                tableHTML += `<tr>
+                    <td>${emp.id}</td>
+                    <td>${emp.name}</td>
+                    <td>₹${emp.salary}</td>
+                </tr>`;
+            });
+            document.getElementById("tableBody").innerHTML = tableHTML;
+        }
+
+        // --- SAVE DATA (Jadugar 2) ---
+        async function addEmployee() {
+            const name = document.getElementById("empName").value;
+            const salary = document.getElementById("empSalary").value;
+
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: name, salary: salary })
+            });
+
+            if (response.ok) {
+                alert("Employee Added! 🎉");
+                loadEmployees(); // List refresh karo
+                document.getElementById("empName").value = "";
+                document.getElementById("empSalary").value = "";
+            } else {
+                alert("Error aa gaya bhai!");
+            }
+        }
+
+        // Page khulte hi list dikhao
+        loadEmployees();
+    </script>
+
+</body>
+</html>
